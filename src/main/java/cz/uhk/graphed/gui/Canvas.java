@@ -18,7 +18,7 @@ public class Canvas extends JPanel {
         setPreferredSize(new Dimension(800, 600));
 
 
-        addMouseMotionListener(new MouseAdapter() {
+        addMouseListener(new MouseAdapter() {
 
             @Override
             public void mousePressed(MouseEvent e) {
@@ -32,9 +32,8 @@ public class Canvas extends JPanel {
         addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                AbstractGraphicObject o = findObjectContaining(e.getPoint());
-                if (o != null) {
-                    o.setPosition(e.getX() - dx, e.getY() - dy);
+                if (abstractGraphicObject != null) {
+                    abstractGraphicObject.setPosition(e.getX() - dx, e.getY() - dy);
                     repaint();
                 }
             }
