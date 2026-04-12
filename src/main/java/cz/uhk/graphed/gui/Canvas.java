@@ -14,6 +14,7 @@ public class Canvas extends JPanel {
     private AbstractGraphicObject abstractGraphicObject;
     private int dx, dy;
     public int width = 800, height = 600;
+    private boolean selectMode = false;
 
     public Canvas() {
         setPreferredSize(new Dimension(width, height));
@@ -23,6 +24,7 @@ public class Canvas extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
+                if (!selectMode) return;
                 abstractGraphicObject = findObjectContaining(e.getPoint());
                 if (abstractGraphicObject != null) {
                     dx = e.getX() - abstractGraphicObject.getPosition().x;
@@ -33,6 +35,7 @@ public class Canvas extends JPanel {
         addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
+                if (!selectMode || abstractGraphicObject == null) return;
                 if (abstractGraphicObject != null) {
                     //abstractGraphicObject.setPosition(e.getX() - dx, e.getY() - dy);
                     abstractGraphicObject.move(
@@ -52,6 +55,10 @@ public class Canvas extends JPanel {
             }
         }
         return o;
+    }
+
+    public void setSelectMode(boolean selectMode) {
+        this.selectMode = selectMode;
     }
 
     public void add(AbstractGraphicObject graphicObject) {

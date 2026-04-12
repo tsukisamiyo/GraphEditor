@@ -7,12 +7,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Random;
+import java.util.function.Supplier;
 
 public class EditorFrame extends JFrame {
 
     private final Random random = new Random();
-
     private Canvas canvas = new Canvas();
+    private JToggleButton selectButton;
 
     public EditorFrame() throws HeadlessException {
         super("FIM Graphic Editor");
@@ -27,41 +28,54 @@ public class EditorFrame extends JFrame {
     private JToolBar createToolbar() {
         JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
 
-        Action square = createAction("Square", Square.class);
-        toolBar.add(square);
-        Action circle =  createAction("Circle", Circle.class);
-        toolBar.add(circle);
-        Action rectangle = createAction("Rectangle", Rectangle.class);
-        toolBar.add(rectangle);
-        Action triangle = createAction("Triangle", Triangle.class);
-        toolBar.add(triangle);
+        selectButton = new JToggleButton("Výběr");
+        selectButton.addActionListener(e -> canvas.setSelectMode(selectButton.isSelected()));
+        toolBar.add(selectButton);
+        toolBar.addSeparator();
+
+        toolBar.add(createAction("Square", () -> {
+            int a = 20 + random.nextInt(30);
+            return new Square(randomPos(a, a), randomColor(), a);
+        }));
+        toolBar.add(createAction("Circle", () -> {
+            int r = 20 + random.nextInt(30);
+            return new Circle(randomPos(2 * r, 2 * r), randomColor(), r);
+        }));
+        toolBar.add(createAction("Rectangle", () -> {
+            int a = 20 + random.nextInt(30);
+            int b = 20 + random.nextInt(30);
+            return new Rectangle(randomPos(a, b), randomColor(), a, b);
+        }));
+        toolBar.add(createAction("Triangle", () -> {
+            int a = 20 + random.nextInt(30);
+            int h = (int) Math.round(a * Math.sin(Math.toRadians(60)));
+            Point pos = new Point(
+                    random.nextInt(Math.max(1, canvas.width - a)),
+                    h + random.nextInt(Math.max(1, canvas.height - h)));
+            return new Triangle(pos, randomColor(), a);
+        }));
 
         return toolBar;
     }
 
-    private AbstractAction createAction(String name, Class<? extends AbstractGraphicObject> c) {
+    private AbstractAction createAction(String name, Supplier<AbstractGraphicObject> factory) {
         return new AbstractAction(name) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    int size = 20 + random.nextInt(30);
-
-                    Point pos = new Point(
-                            random.nextInt(canvas.width - size),
-                            random.nextInt(canvas.height - size));
-
-                    int r = random.nextInt(255),
-                            g = random.nextInt(255),
-                            b = random.nextInt(255);
-
-                    canvas.add(c.getDeclaredConstructor(Point.class, Color.class, int.class)
-                            .newInstance(pos, new Color(r, g, b), size));
-                    canvas.repaint();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+                canvas.add(factory.get());
+                canvas.repaint();
             }
         };
+    }
+
+    private Color randomColor() {
+        return new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+    }
+
+    private Point randomPos(int drawnWidth, int drawnHeight) {
+        return new Point(
+                random.nextInt(Math.max(1, canvas.width - drawnWidth)),
+                random.nextInt(Math.max(1, canvas.height - drawnHeight)));
     }
 
     private void initSampleData() {
