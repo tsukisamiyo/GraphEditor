@@ -13,9 +13,10 @@ public class Canvas extends JPanel {
     private List<AbstractGraphicObject> graphicObjects = new ArrayList<>();
     private AbstractGraphicObject abstractGraphicObject;
     private int dx, dy;
+    public int width = 800, height = 600;
 
     public Canvas() {
-        setPreferredSize(new Dimension(800, 600));
+        setPreferredSize(new Dimension(width, height));
 
 
         addMouseListener(new MouseAdapter() {
@@ -33,7 +34,10 @@ public class Canvas extends JPanel {
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (abstractGraphicObject != null) {
-                    abstractGraphicObject.setPosition(e.getX() - dx, e.getY() - dy);
+                    //abstractGraphicObject.setPosition(e.getX() - dx, e.getY() - dy);
+                    abstractGraphicObject.move(
+                            e.getX() - abstractGraphicObject.getPosition().x - dx,
+                            e.getY() - abstractGraphicObject.getPosition().y - dy);
                     repaint();
                 }
             }
@@ -52,6 +56,7 @@ public class Canvas extends JPanel {
 
     public void add(AbstractGraphicObject graphicObject) {
         graphicObjects.add(graphicObject);
+        repaint();
     }
 
     @Override

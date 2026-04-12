@@ -1,6 +1,5 @@
 package cz.uhk.graphed;
 
-import cz.uhk.graphed.gui.Canvas;
 import cz.uhk.graphed.gui.EditorFrame;
 
 import javax.swing.*;

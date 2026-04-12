@@ -8,7 +8,7 @@ public class Triangle extends AbstractGraphicObject {
     private int cx, cy;
 
     public Triangle(Point position, Color color, int a) {
-        super(color, position);
+        super(position, color);
         this.a = a;
         computeC();
     }
@@ -24,7 +24,7 @@ public class Triangle extends AbstractGraphicObject {
     public void draw(Graphics g) {
         computeC();
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setPaint(Color.black);
+        g2d.setPaint(color);
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.drawLine(position.x, position.y, position.x + a, position.y);
         g2d.drawLine(position.x, position.y, cx, cy);

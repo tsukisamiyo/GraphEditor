@@ -6,7 +6,7 @@ public abstract class AbstractGraphicObject {
     protected Point position;
     protected Color color;
 
-    public AbstractGraphicObject(Color color, Point position) {
+    public AbstractGraphicObject(Point position, Color color) {
         this.color = color;
         this.position = position;
     }
@@ -36,4 +36,8 @@ public abstract class AbstractGraphicObject {
 
     public abstract void draw(Graphics g);
     public abstract boolean contains(Point p);
+
+    public void move(int dx, int dy) {
+        position.translate(dx, dy);
+    }
 }
